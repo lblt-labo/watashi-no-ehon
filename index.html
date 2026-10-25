@@ -94,9 +94,9 @@ body{background:#fff}
 <section class="scr show" id="s-start">
 <h1 class="tt">📖 わたしのえほん</h1>
 <p class="sub">ぐうぜんからうまれる わたしだけのものがたり</p>
-<h2>なんページの えほん？</h2>
+<h2>ほんぶんは なんページ？</h2>
 <div class="row" id="g-n"><button data-v="4">4ページ</button><button data-v="8">8ページ</button><button data-v="12">12ページ</button><button data-v="16">16ページ</button></div>
-<small>ひょうし・うらひょうしも ふくんだ ページすうだよ</small>
+<small>ひょうし と うらひょうしは べつに つくるよ</small>
 <h2>どんな おだい？</h2>
 <div class="row" id="g-g"><button data-v="hira">ひらがな</button><button data-v="kan"><ruby>漢字<rt>かんじ</rt></ruby></button><button data-v="ono">オノマトペ</button><button data-v="mix">ミックス</button></div>
 <div class="row" id="g-k"><button data-v="1">1ねんせい</button><button data-v="2">2ねんせいまで</button><button data-v="3">3ねんせいまで</button></div>
@@ -119,10 +119,14 @@ body{background:#fff}
 
 <section class="scr" id="s-end">
 <h1 class="tt">🎉 おわり！</h1>
-<p class="sub">ぜんぶ できたね！ ページを タップすると なおせるよ</p>
+<div id="cp" class="pg" style="min-height:0"></div>
+<div class="row"><button id="fc">🎨 ひょうしを なおす</button><button id="fb">✏️ ほんぶんを なおす</button></div>
+<p class="sub">ページを タップすると なおせるよ</p>
 <div id="eg" class="row" style="gap:8px"></div>
 <h2>えほんの だいめい</h2>
 <input id="ttl" maxlength="30" placeholder="だいめいを いれてね" style="width:100%;font:inherit;font-size:1.3rem;padding:10px;border:3px solid #1B2A41;border-radius:12px">
+<h2>つくった ひと</h2>
+<input id="au" maxlength="20" placeholder="なまえを いれてね" style="width:100%;font:inherit;font-size:1.3rem;padding:10px;border:3px solid #1B2A41;border-radius:12px">
 <button class="pri big" id="sv">📚 ほんだなに ほぞんする</button>
 </section>
 
@@ -137,15 +141,15 @@ body{background:#fff}
 <section class="scr" id="s-parent"><div id="pc"></div></section>
 
 <section class="scr" id="s-print">
-<p>① 「いんさつ」→ A4・よこむき・<b>りょうめん</b>（みじかい へんで めくる）<br>② まんなかの せんで はんぶんに おる<br>③ いろがようしで くるんで できあがり！</p>
+<p>① 「いんさつ」→ A4・よこむき・<b>りょうめん</b>（みじかい へんで めくる）<br>② 「ひょうし」の シートと「ほんぶん」の シートが でるよ<br>③ ほんぶんを はんぶんに おって かさね、ひょうしで くるんで できあがり！</p>
 <button class="pri big" id="doprint">🖨 いんさつする</button>
 <div id="pv"></div>
 </section>
 
 <section class="scr" id="s-guide">
 <div class="stp"><b>🖨</b><div>1. A4のかみに <b>りょうめん</b> いんさつ<br><small>よこむき・みじかい へんで めくる</small></div></div>
-<div class="stp"><b>📄</b><div>2. ぜんぶ かさねて <b>はんぶんに おる</b><br><small>ページの じゅんばんに かさねよう</small></div></div>
-<div class="stp"><b>🎨</b><div>3. すきな いろの <b>いろがようし</b>で くるむ</div></div>
+<div class="stp"><b>📄</b><div>2. 「ほんぶん」の シートを かさねて <b>はんぶんに おる</b><br><small>ページの じゅんばんに かさねよう</small></div></div>
+<div class="stp"><b>🎨</b><div>3. 「ひょうし」の シートか すきな <b>いろがようし</b>で くるむ</div></div>
 <div class="stp"><b>📎</b><div>4. まんなかを <b>ホチキス</b>か のりで とめる<br><small>おとなと いっしょに やろう</small></div></div>
 <div class="stp"><b>📱</b><div>5. うらひょうしの <b>QR</b>を スマホで よみとると おはなしの もじが でるよ</div></div>
 </section>
@@ -178,14 +182,14 @@ var KAN={1:'山やま 川かわ 花はな 空そら 雨あめ 森もり 犬い�
 3:'港みなと 湖みずうみ 島しま 波なみ 橋はし 畑はたけ 笛ふえ 箱はこ 氷こおり 豆まめ 皿さら 緑みどり 命いのち 薬くすり'.split(' ')};
 var COLORS=[['#000000','くろ'],['#E69F00','おれんじ'],['#56B4E9','そらいろ'],['#009E73','みどり'],['#F0E442','きいろ'],['#0072B2','あお'],['#D55E00','しゅいろ'],['#CC79A7','ぴんく']];
 
-var S={n:8,g:'hira',gr:1,mode:'draw',pages:[],i:0,from:'start',title:'',editId:null,created:0};
+var S={n:8,g:'hira',gr:1,mode:'draw',pages:[],cover:{img:''},author:'',i:0,from:'start',title:'',editId:null,created:0};
 var backFn=null;
-function go(id,back,title){[].forEach.call(document.querySelectorAll('.scr'),function(s){s.classList.toggle('show',s.id===id);});backFn=back||null;var b=$('bk');if(b)b.hidden=!back;var h=$('ht');if(h)h.textContent=title||'わたしのえほん';window.scrollTo(0,0);}
+function go(id,back,title){[].forEach.call(document.querySelectorAll('.scr'),function(s){s.classList.toggle('show',s.id===id);});backFn=back||null;var b=$('bk');if(b){b.hidden=!back;b.textContent='＜ もどる';}var h=$('ht');if(h)h.textContent=title||'わたしのえほん';window.scrollTo(0,0);}
 on('bk','click',function(){if(backFn)backFn();});
 function toStart(){stopRec();go('s-start');}
 
 /* ---------- ヘルプ ---------- */
-on('hp','click',function(){modal('<h3>🎤 マイクの つかいかた</h3><ol><li>おおきな マイクボタンを タップ</li><li>「ひとつ たずねて」と きかれたら 「きょか」を えらぶ</li><li>おはなしを しゃべると もじに なるよ</li><li>もういちど タップで おわり。まちがいは ゆびで なおせるよ</li></ol><h3>📖 えほんの つくりかた</h3><ol><li>おだいを みて おはなしを おもいうかべよう</li><li>えを かく・もじを うつ・こえで はなす（はじめに えらんだ ひとつ）で おはなしを つくって「つぎへ」</li><li>さいごに「おわり！」で だいめいを きめて ほぞん。「まえ」で いつでも なおせるよ</li><li>「ほんだなに ほぞん」で いつでも よめるよ</li></ol><h3>🖨 いんさつの しゅじゅん</h3><ol><li>かんせい がめんで「A4いんさつ」</li><li>A4・よこむき・りょうめんで いんさつ</li><li>はんぶんに おって いろがようしで くるむ</li></ol>',[{t:'わかった！',c:'pri'}]);});
+on('hp','click',function(){modal('<h3>🎤 マイクの つかいかた</h3><ol><li>おおきな マイクボタンを タップ</li><li>「ひとつ たずねて」と きかれたら 「きょか」を えらぶ</li><li>おはなしを しゃべると もじに なるよ</li><li>もういちど タップで おわり。まちがいは ゆびで なおせるよ</li></ol><h3>📖 えほんの つくりかた</h3><ol><li>おだいを みて おはなしを おもいうかべよう</li><li>はじめに「ひょうし」の えを かこう</li><li>ほんぶんは えを かく・もじを うつ・こえで はなす（えらんだ ひとつ）で おはなしを つくって「つぎへ」</li><li>さいごに「おわり！」で だいめいを きめて ほぞん。「まえ」で いつでも なおせるよ</li><li>「ほんだなに ほぞん」で いつでも よめるよ</li></ol><h3>🖨 いんさつの しゅじゅん</h3><ol><li>かんせい がめんで「A4いんさつ」</li><li>A4・よこむき・りょうめんで いんさつ</li><li>はんぶんに おって いろがようしで くるむ</li></ol>',[{t:'わかった！',c:'pri'}]);});
 
 /* ---------- スタート設定 ---------- */
 function sel(c,b){[].forEach.call(c.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});}
@@ -267,45 +271,55 @@ on('mic','click',function(){if(recording)stopRec();else startRec();});
 
 /* ---------- 制作画面 ---------- */
 on('go','click',function(){
-  S.pages=[];for(var k=0;k<S.n-2;k++)S.pages.push({img:'',text:'',audio:null,tp:null});
-  S.i=0;S.title='';S.editId=null;S.created=0;showPage();
+  S.pages=[];for(var k=0;k<S.n;k++)S.pages.push({img:'',text:'',audio:null,tp:null});
+  S.cover={img:''};S.i=-1;S.title='';S.author='';S.editId=null;S.created=0;showPage();
 });
 function showPage(){
-  var p=S.pages[S.i];if(!p)return;if(!p.tp)p.tp=topic();
-  var tot=S.n-2;
-  go('s-make',function(){collect();modal('<p>つくるのを やめて スタートに もどる？<br><small>ほぞんして いないものは きえるよ</small></p>',[{t:'もどる',f:toStart},{t:'つづける',c:'pri'}]);},(S.i+1)+' / '+tot+' ページ');
-  var tc=$('tc');if(tc)tc.innerHTML='<div class="tb">'+p.tp.h+'</div><div><b>このページの<br>はじまりのもじ</b><br><button id="dice">🎲 べつの おだい</button></div>';
-  var M=S.mode;show('cv',M==='draw');show('tools',M==='draw');show('txt',M!=='draw');show('mic',M==='voice');
+  var cover=S.i<0,p=cover?S.cover:S.pages[S.i];if(!p)return;
+  var N=S.pages.length;if(!cover&&!p.tp)p.tp=topic();
+  go('s-make',cover?function(){collect();modal('<p>つくるのを やめて スタートに もどる？<br><small>ほぞんして いないものは きえるよ</small></p>',[{t:'もどる',f:toStart},{t:'つづける',c:'pri'}]);}:function(){collect();S.i--;showPage();},cover?'ひょうし':(S.i+1)+' / '+N+' ページ');
+  var bk=$('bk');if(bk&&!cover)bk.textContent='＜ まえ';
+  show('tc',!cover);
+  var tc=$('tc');if(tc&&!cover)tc.innerHTML='<div class="tb">'+p.tp.h+'</div><div><b>このページの<br>はじまりのもじ</b><br><button id="dice">🎲 べつの おだい</button></div>';
+  var M=cover?'draw':S.mode;show('cv',M==='draw');show('tools',M==='draw');show('txt',M!=='draw');show('mic',M==='voice');
   var t=$('txt');if(t){t.value=p.text||'';t.rows=M==='text'?9:4;t.placeholder=M==='voice'?'ここに おはなしが でるよ。ゆびで なおせるよ':'おはなしを かいてね';}
   clearCv();
   if(p.img&&M==='draw'){var im=new Image();im.onload=function(){try{cx.drawImage(im,0,0,cv.width,cv.height);}catch(e){}};im.src=p.img;}
-  var pv=$('pv0'),nx=$('nx');if(pv)pv.disabled=S.i===0;if(nx)nx.textContent=S.i===tot-1?'おわり ＞':'つぎへ ＞';
+  var pv=$('pv0'),nx=$('nx');if(pv)pv.disabled=cover;if(nx)nx.textContent='つぎへ ＞';
 }
 on('tc','click',function(e){if(e.target.closest('#dice')){var p=S.pages[S.i];if(p){p.tp=topic();showPage();}}});
 function collect(){
-  stopRec();var p=S.pages[S.i];if(!p)return;
-  try{if(S.mode==='draw'&&cv)p.img=cv.toDataURL('image/jpeg',0.82);}catch(e){}
-  var t=$('txt');if(t&&S.mode!=='draw')p.text=t.value.trim();
+  stopRec();var cover=S.i<0,p=cover?S.cover:S.pages[S.i];if(!p)return;
+  try{if((cover||S.mode==='draw')&&cv)p.img=cv.toDataURL('image/jpeg',0.82);}catch(e){}
+  var t=$('txt');if(t&&!cover&&S.mode!=='draw')p.text=t.value.trim();
+}
+function updateCP(){
+  var c=$('cp'),t=$('ttl'),a=$('au');if(t)S.title=t.value;if(a)S.author=a.value;if(!c)return;
+  c.innerHTML=(S.cover.img?'<img src="'+S.cover.img+'" alt="">':'<div class="noimg">🖍</div>')+'<p class="tx ti">'+esc((t&&t.value)||'だいめい')+'</p><p>'+(a&&a.value?'さく '+esc(a.value):'')+'</p>';
 }
 function openEnd(){
   stopRec();
-  go('s-end',function(){S.i=S.n-3;showPage();},'おわり！');
+  go('s-end',function(){S.i=S.pages.length-1;showPage();},'おわり！');
   var h='';S.pages.forEach(function(p,i){h+='<button class="th" data-i="'+i+'">'+(p.img?'<img src="'+p.img+'" alt="">':'<div class="noimg" style="font-size:1.5rem">✏️</div>')+(i+1)+'ページ<br><small>'+esc((p.text||'').slice(0,14))+'</small></button>';});
-  var g=$('eg');if(g)g.innerHTML=h;var t=$('ttl');if(t)t.value=S.title||'';
+  var g=$('eg');if(g)g.innerHTML=h;
+  var t=$('ttl'),a=$('au');if(t)t.value=S.title||'';if(a)a.value=S.author||'';updateCP();
 }
+on('ttl','input',updateCP);on('au','input',updateCP);
+on('fc','click',function(){S.i=-1;showPage();});
+on('fb','click',function(){S.i=0;showPage();});
 on('eg','click',function(e){var b=e.target.closest('button');if(b&&b.dataset.i!==undefined){S.i=+b.dataset.i;showPage();}});
 function saveCurrent(){
-  var b={title:S.title,n:S.n,created:S.created||Date.now(),pages:S.pages.map(function(p){return{img:p.img,text:p.text,audio:p.audio||null};})};
+  var b={title:S.title,author:S.author,n:S.pages.length,cover:{img:S.cover.img},created:S.created||Date.now(),pages:S.pages.map(function(p){return{img:p.img,text:p.text,audio:p.audio||null};})};
   if(S.editId)b.id=S.editId;
   putBook(b,function(ok){S.editId=b.id;S.created=b.created;S.from='make';note(ok?'ほんだなに ほぞんしたよ！':'ほぞんしたよ（アプリを とじると きえるかも）');openReader(b,0);});
 }
-on('sv','click',function(){var t=$('ttl'),v=t?t.value.trim():'';if(!v){note('だいめいを いれてね');return;}S.title=v;saveCurrent();});
+on('sv','click',function(){var t=$('ttl'),a=$('au'),v=t?t.value.trim():'';if(!v){note('だいめいを いれてね');return;}S.title=v;S.author=a?a.value.trim():'';saveCurrent();});
 function editBook(b){
-  S.n=b.n;S.title=b.title;S.editId=b.id||null;S.created=b.created||0;
-  S.pages=b.pages.map(function(p){return{img:p.img,text:p.text,audio:p.audio||null,tp:null};});S.i=0;showPage();
+  S.n=b.pages.length;S.title=b.title;S.author=b.author||'';S.editId=b.id||null;S.created=b.created||0;S.cover={img:b.cover?b.cover.img:''};
+  S.pages=b.pages.map(function(p){return{img:p.img,text:p.text,audio:p.audio||null,tp:null};});S.i=-1;showPage();
 }
-on('nx','click',function(){collect();if(S.i<S.n-3){S.i++;showPage();}else openEnd();});
-on('pv0','click',function(){collect();if(S.i>0){S.i--;showPage();}});
+on('nx','click',function(){collect();if(S.i<S.pages.length-1){S.i++;showPage();}else openEnd();});
+on('pv0','click',function(){collect();if(S.i>-1){S.i--;showPage();}});
 
 /* ---------- QRコード（自前生成・文字入り） ---------- */
 function makeQR(str){
@@ -350,7 +364,7 @@ function makeQR(str){
   }catch(e){return null;}
 }
 function qrFor(b){
-  var s='わたしのえほん『'+b.title+'』 '+b.pages.map(function(p){return p.text;}).join(' ');
+  var s='わたしのえほん『'+b.title+'』'+(b.author?' さく '+b.author:'')+' '+b.pages.map(function(p){return p.text;}).join(' ');
   var m=null;while(s.length>0){m=makeQR(s);if(m)break;s=s.slice(0,Math.max(0,s.length-6));}
   if(!m)return'';var n=m.length,d='',r,c;
   for(r=0;r<n;r++)for(c=0;c<n;c++)if(m[r][c])d+='M'+(c+4)+' '+(r+4)+'h1v1h-1z';
@@ -381,7 +395,7 @@ function openShelf(){
     shelfList=list.sort(function(a,b){return b.created-a.created;});
     var h=shelfList.length?'':'<p class="card">まだ えほんが ないよ。つくって ほぞんしよう！</p>';
     shelfList.forEach(function(b,i){var d=new Date(b.created);
-      h+='<div class="bk">'+(b.pages[0]&&b.pages[0].img?'<img src="'+b.pages[0].img+'" alt="">':'<div class="noimg" style="width:96px;font-size:1.5rem">📖</div>')+'<div class="t">'+esc(b.title)+'<br><small>'+(d.getMonth()+1)+'がつ'+d.getDate()+'にち ・ '+b.n+'ページ</small></div><button data-r="'+i+'">▶ よむ</button><button data-e="'+i+'">✏️ なおす</button><button data-d="'+i+'" aria-label="けす">🗑</button></div>';});
+      h+='<div class="bk">'+(b.cover&&b.cover.img?'<img src="'+b.cover.img+'" alt="">':'<div class="noimg" style="width:96px;font-size:1.5rem">📖</div>')+'<div class="t">'+esc(b.title)+'<br><small>'+(d.getMonth()+1)+'がつ'+d.getDate()+'にち ・ '+b.pages.length+'ページ</small></div><button data-r="'+i+'">▶ よむ</button><button data-e="'+i+'">✏️ なおす</button><button data-d="'+i+'" aria-label="けす">🗑</button></div>';});
     var s=$('sl');if(s)s.innerHTML=h;
   });
 }
@@ -419,23 +433,25 @@ var RB=null,ri=0,curAudio=null;
 function stopAudio(){try{if(curAudio){curAudio.pause();curAudio=null;}if(window.speechSynthesis)speechSynthesis.cancel();}catch(e){}}
 function speak(t){try{if(!t||!window.speechSynthesis)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';speechSynthesis.speak(u);}catch(e){}}
 function playPage(){
-  var p=!RB||ri===RB.n-1?null:(ri===0?{text:RB.title}:RB.pages[ri-1]);if(!p)return;stopAudio();
+  var p=!RB||ri===RB.pages.length+1?null:(ri===0?{text:RB.title+(RB.author?' さく '+RB.author:'')}:RB.pages[ri-1]);if(!p)return;stopAudio();
   if(p.audio){try{var u=URL.createObjectURL(p.audio);curAudio=new Audio(u);curAudio.onended=function(){URL.revokeObjectURL(u);};var pr=curAudio.play();if(pr&&pr.catch)pr.catch(function(){speak(p.text||RB.title);});return;}catch(e){}}
   speak(p.text||RB.title);
 }
 function readerBack(){stopAudio();if(S.from==='shelf')openShelf();else toStart();}
 function openReader(b,i){RB=b;ri=i||0;go('s-read',readerBack,'えほんを よむ');renderR();}
 function renderR(){
-  stopAudio();if(!RB)return;var n=RB.n,h='';
-  if(ri===n-1)h='<div class="pg">'+qrFor(RB)+'<p class="tx">おしまい 🎉<br><small>QRを スマホで よみとると おはなしの もじが でるよ</small></p></div>';
-    else{var p=ri===0?{img:RB.pages[0]?RB.pages[0].img:'',text:RB.title}:RB.pages[ri-1];h='<div class="pg">'+(p.img?'<img src="'+p.img+'" alt="">':'<div class="noimg">🖍</div>')+'<p class="tx'+(ri?'':' ti')+'">'+esc(p.text)+'</p></div>';}
+  stopAudio();if(!RB)return;var T=RB.pages.length+2,h='';
+  function im(x){return x?'<img src="'+x+'" alt="">':'<div class="noimg">🖍</div>';}
+  if(ri===T-1)h='<div class="pg">'+qrFor(RB)+'<p class="tx">おしまい 🎉<br><small>QRを スマホで よみとると おはなしの もじが でるよ</small></p></div>';
+  else if(ri===0)h='<div class="pg">'+im(RB.cover&&RB.cover.img)+'<p class="tx ti">'+esc(RB.title)+'</p><p>'+(RB.author?'さく '+esc(RB.author):'')+'</p></div>';
+  else{var p=RB.pages[ri-1];h='<div class="pg">'+im(p.img)+'<p class="tx">'+esc(p.text)+'</p></div>';}
   var rd=$('rd');if(rd)rd.innerHTML=h;
-  var r=$('ri');if(r)r.textContent=(ri+1)+' / '+n+' ページ';
+  var r=$('ri');if(r)r.textContent=ri===0?'ひょうし':(ri===T-1?'うらひょうし':ri+' / '+(T-2)+' ページ');
   var a=$('rp'),c=$('rn'),pl=$('rpl'),sv=$('rs');
-  if(a)a.disabled=ri===0;if(c)c.disabled=ri===n-1;if(pl)pl.style.visibility=ri===n-1?'hidden':'';if(sv)sv.style.display=RB.id?'none':'';
+  if(a)a.disabled=ri===0;if(c)c.disabled=ri===T-1;if(pl)pl.style.visibility=ri===T-1?'hidden':'';if(sv)sv.style.display=RB.id?'none':'';
 }
 on('rp','click',function(){if(ri>0){ri--;renderR();}});
-on('rn','click',function(){if(RB&&ri<RB.n-1){ri++;renderR();}});
+on('rn','click',function(){if(RB&&ri<RB.pages.length+1){ri++;renderR();}});
 on('rpl','click',playPage);
 on('rs','click',function(){
   if(!RB||RB.id)return;
@@ -447,15 +463,17 @@ on('rg','click',function(){go('s-guide',function(){go('s-read',readerBack,'え�
 
 /* ---------- A4印刷（面付け） ---------- */
 function ppHTML(b,k){
-  var n=b.n;
-  if(k===n-1)return'<div class="pp back">'+qrFor(b)+'<p>QRを スマホで よみとると<br>おはなしの もじが でるよ</p><p style="font-size:9pt;text-align:left">【つくりかた】1.りょうめん いんさつ 2.はんぶんに おる 3.いろがようしで くるむ</p></div>';
-  var p=k===0?(b.pages[0]||{}):(b.pages[k-1]||{}),img=p.img?'<img src="'+p.img+'" alt="">':'<div class="noimg"></div>';
-  if(k===0)return'<div class="pp"><h1>'+esc(b.title)+'</h1>'+img+'<p>わたしのえほん</p></div>';
-  return'<div class="pp"><div class="pn">'+k+'</div>'+img+'<p>'+esc(p.text)+'</p></div>';
+  function im(x){return x?'<img src="'+x+'" alt="">':'<div class="noimg"></div>';}
+  if(k==='c')return'<div class="pp"><h1>'+esc(b.title)+'</h1>'+im(b.cover&&b.cover.img)+'<p>'+(b.author?'さく '+esc(b.author):'')+'</p></div>';
+  if(k==='b')return'<div class="pp back">'+qrFor(b)+'<p>QRを スマホで よみとると<br>おはなしの もじが でるよ</p><p style="font-size:9pt;text-align:left">【つくりかた】1.りょうめん いんさつ 2.ほんぶんを はんぶんに おる 3.ひょうしで くるむ</p></div>';
+  if(k==='e')return'<div class="pp"></div>';
+  var p=b.pages[k-1]||{};
+  return'<div class="pp"><div class="pn">'+k+'</div>'+im(p.img)+'<p>'+esc(p.text)+'</p></div>';
 }
 function sheetsHTML(b){
-  var h='',k;function sheet(a,l){return'<div class="sheet"><div class="sl">'+l+'</div>'+ppHTML(b,a[0]-1)+ppHTML(b,a[1]-1)+'</div>';}
-  for(k=0;k<b.n/4;k++){h+=sheet([b.n-2*k,1+2*k],'おもて '+(k+1));h+=sheet([2+2*k,b.n-1-2*k],'うら '+(k+1));}
+  var N=b.pages.length,h='',k;function sheet(a,l){return'<div class="sheet"><div class="sl">'+l+'</div>'+ppHTML(b,a[0])+ppHTML(b,a[1])+'</div>';}
+  h+=sheet(['b','c'],'ひょうし おもて');h+=sheet(['e','e'],'ひょうし うら');
+  for(k=0;k<N/4;k++){h+=sheet([N-2*k,1+2*k],'ほんぶん おもて '+(k+1));h+=sheet([2+2*k,N-1-2*k],'ほんぶん うら '+(k+1));}
   return h;
 }
 function fitPreview(){
